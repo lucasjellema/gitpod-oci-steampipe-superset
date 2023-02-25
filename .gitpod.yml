@@ -7,15 +7,17 @@ tasks:
       docker-compose -f docker-compose-non-dev.yml up      
   - name: Open README 
     command: gp open README.md      
-  - name: Install Steampipe with RSS Plugin
+  - name: Install Steampipe with OCI Plugin
     init: |
       sudo /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/turbot/steampipe/main/install.sh)"
       steampipe -v
       steampipe plugin install steampipe
       steampipe query "select name from steampipe_registry_plugin;"
-      steampipe plugin install rss
-    command: |
+      steampipe plugin install oci
       steampipe service start --show-password 
+    command: |
+      echo "Ready to run queries!" 
+      steampipe service status --show-password 
       
 ports:
   # Apache SuperSet

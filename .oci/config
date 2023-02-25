@@ -1,0 +1,6 @@
+[DEFAULT]
+user=ocid1.user.oc1..<unique_ID>
+fingerprint=<optional: your_fingerprint>
+tenancy=ocid1.tenancy.oc1..<unique_ID>
+region=<identifier of the OCI region you want to connect to, for example us-ashburn-1>
+key_file=/home/gitpod/.oci/oci_api_key.pem

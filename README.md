@@ -29,9 +29,6 @@ cp .oci/config  ~/.oci
 cp .oci/oci_api_key.pem  ~/.oci
 # check both files are located where they should be
 ls -l  ~/.oci
-# fix (warning about) too broad file permissions
-oci setup repair-file-permissions --file /home/gitpod/.oci/config
-oci setup repair-file-permissions --file /home/gitpod/.oci/oci_api_key.pem
 ```
 
 ## Steampipe
@@ -39,8 +36,15 @@ oci setup repair-file-permissions --file /home/gitpod/.oci/oci_api_key.pem
 Once the workspace has fully started and Steampipe is available, you can execute batch-mode (non-interactive) queries like this one:
 
 ```
-steampipe query "select title, link, description from rss_channel where feed_link = 'https://technology.amis.nl/feed/'"
+steampipe query "select
+  name,
+  id,
+  is_mfa_activated
+from
+  oci_identity_user;"
 ```
+
+![](images/steampipe-oci-query.png)  
 
 In order to look at data from Steampipe in Superset, we first need to add a database connection in Superset to Steampipe's PostgreSQL database.
 
@@ -50,6 +54,8 @@ Open port 8088 to enter the Superset web UI.
 ![](images/open-superset-ui.png)  
 
 Login with user admin and password admin.
+
+![](images/superset-login.png)  
 
 Click on the plus icon. In the dropdown list select *Data*. In the child menu, click on *Connect database*.
 
@@ -78,4 +84,40 @@ Click on the Connect button.
 A window appears that indicates that the database has been connected. Press the Finish button.
 ![](images/step3-connected.png)  
 
+The New Dataset page appears. Select PostgreSQL | Steampipe as the database and oci as the schema.
+![](images/new-dataset.png)  
+
+A long list of tables is presented that all expose data for specific types of OCI Resources.
+
+You can of course explore any of these tables. One you will have for sure is *oci_identity_compartments*:
+
+![](images/compartment-dataset.png)  
+
+With this data set in hand, it is fairly easy to create this chart that shows when I have created compartments in my tenancy:
+![](images/compartments-barchart.png)  
+
+### Treemap on Object Storage Buckets and Contents
+
+Let's create a new Data Set for the OCI_OBJECTSTORAGE_OBJECT:
+
+![](images/objectstorage-dataset.png)  
+
+Click on the button *Create Data Set and Create Chart*.
+
+Select chart type Tree Map and click on button *Create New Chart*.
+![](images/chart-type-treemap.png)  
+
+Drag the column *bucket_name* to the Dimensions box and the column *size* to the Metrics box. Specify Sum as the aggregation operator.
+
+Then click on Update Chart. This is the result in my case:
+
+![](images/buckets-treemap.png)  
+
+I next dragged column *content_type* the Dimensions box and refreshed the chart The treemap has now an additional level of nesting: each bucket is subdivided by *content_type*. Note that the order of the columns in the Dimensions definition is meaningful.
+
+![](images/treemap-buckets-by-contenttype.png)  
+
+## Resources
+
+[OCI Steampipe Plugin Documentation](https://hub.steampipe.io/plugins/turbot/oci)
 
