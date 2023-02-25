@@ -81,6 +81,12 @@ The password created for the *steampipe* user can be seen in the terminal window
 
 Click on the Connect button.
 
+Note: if you get the message that "port is closed" (for port 9193) what may help is restart the Steampipe service:
+
+```
+steampipe service restart
+```
+
 A window appears that indicates that the database has been connected. Press the Finish button.
 ![](images/step3-connected.png)  
 
