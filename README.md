@@ -16,6 +16,11 @@ Once the workspace is up and running, the following components will have been in
 This picture shows the contents of the workspace:
 ![](images/workspace.png)  
 
+Note: I have seen some instances where Superset did not startup successfully. I could remedy the situation easily by reissuing the statement to run docker-compose:
+
+```
+docker-compose -f docker-compose-non-dev.yml up      
+```
 
 ## Configure OCI - Config file and Private Key
 
